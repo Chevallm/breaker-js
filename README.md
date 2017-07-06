@@ -33,11 +33,11 @@ If you can't hit the ball with the pad and the ball fall, you will loose a life.
 
 ### Score
 Here is a list of how to score :
-| Action 	| Score 	|
+| Action 	          | Score                           	|
 |------------------	|----------------------------------	|
-| Hit the pad 	| 10 	|
-| Hit a cell 	| 20 	|
-| Break a cell 	| 30 	|
+| Hit the pad 	    | 10 	                              |
+| Hit a cell 	      | 20 	                              |
+| Break a cell 	    | 30                              	|
 | Finish the level 	| number of remainings lives * 50  	|
 
 ## Contact
