@@ -37,7 +37,7 @@ class Map {
     this.balles = [];
     this.bckgrndColor = "skyblue";
     this.briques = []
-    this.levelName = levelName; //match to the json file : ./js/levels/{levelName}.json
+    this.levelName = levelName; //match to the json file : ./js/levels/1.json and object {levelName}
     var xhr = this.getXMLHttpRequest();
     xhr.open("get","./js/levels/1.json", false);
     xhr.send(null);
@@ -69,6 +69,9 @@ class Map {
     // draw the map
     this.ctx.fillStyle = this.bckgrndColor;
     this.ctx.fillRect(0, 0, this.w, this.h);
+    var img = new Image()
+    img.src = 'https://placeimg.com/600/600/nature'
+    this.ctx.drawImage(img,0,0)
 
     //draw the pads
     this.pads.forEach( j => {
