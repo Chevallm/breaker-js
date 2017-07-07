@@ -13,6 +13,8 @@ class Pad {
   draw() {
       this.ctx.fillStyle = this.color;
       this.ctx.fillRect(this.x, this.y, this.w, this.h);
+      this.ctx.strokeStyle = "white"
+      this.ctx.strokeRect(this.x, this.y, this.w, this.h)
 
       if (this.debug) {
         // line y

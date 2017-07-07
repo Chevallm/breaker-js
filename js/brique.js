@@ -1,5 +1,6 @@
 class Brique {
-  constructor(ctx, sante) {
+  constructor(ctx, sante, game) {
+    this.game = game
     this.ctx = ctx;
     this.x = this.y = 0;
     this.w = 50;
@@ -41,7 +42,7 @@ class Brique {
   endommage() {
     this.sante -= 1
     if(this.sante < 1) {
-      this.ctx.player.addScore(30)
+      this.game.player.addScore(30)
     }
   }
 }

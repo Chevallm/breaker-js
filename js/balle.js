@@ -1,11 +1,12 @@
 class Balle {
 
-  constructor(ctx, pad, debug = false) {
+  constructor(ctx, game, pad, debug = false) {
     this.ctx = ctx
+    this.game = game
     this.x = 0
     this.y = 0
     this.r = 10
-    this.color = "blue"
+    this.color = "black"
     this.dx = 5
     this.dy = 5
     this.v = 1
@@ -47,6 +48,7 @@ class Balle {
     this.ctx.fillStyle = this.color
     this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI)
     this.ctx.fill()
+    this.ctx.stroke()
 
     if (this.debug) {
       // line y
@@ -87,6 +89,13 @@ class Balle {
   }
 
   move() {
+
+    // la balle est fixé au pads
+    if(this.fixed) {
+      this.dx = 0
+      this.y = this.pad.y - this.r -1 // on place la balle au dessus du pad
+    }
+
     // collision avec les murs
     if ((this.x + this.dx * this.v) - this.r >= 0) { // mur gauche
       if ((this.x + this.dx * this.v) + this.r <= this.ctx.canvas.clientWidth) { // mur droit
@@ -96,9 +105,9 @@ class Balle {
             this.x += this.dx * this.v
             this.y += this.dy * this.v
           } else {
-            this.ctx.player.lifes-- // on enleve une vie
+            this.game.player.lifes-- // on enleve une vie
             this.init() // on replace la balle
-            this.ctx.p.init() // on replace le pad
+            this.pad.init() // on replace le pad
           }
         } else {
           this.inverserDY()
@@ -114,7 +123,7 @@ class Balle {
       if (this.y + this.r >= this.pad.y) { // la balle est touche la hauteur du pad
         this.inverserDY() // rebond vertical
 
-        this.ctx.player.addScore(10) // on gagne 10 points si on touche le pad
+        this.game.player.addScore(10) // on gagne 10 points si on touche le pad
 
         if (this.v < 10) { // on met la vitesse max à 10
           this.v *= 1.05 // on augmente la vitesse de 5% dès qu'on touche le pad
@@ -128,37 +137,37 @@ class Balle {
       }
     }
     // collision avec les briques
-    for (var i = 0; i < this.ctx.m.briques.length; i++) {
-      for (var j = 0; j < this.ctx.m.briques[i].length; j++) {
-        var br = this.ctx.m.briques[i][j] // on recupère la brique en cours
+    for (var i = 0; i < this.game.map.briques.length; i++) {
+      for (var j = 0; j < this.game.map.briques[i].length; j++) {
+        var br = this.game.map.briques[i][j] // on recupère la brique en cours
 
         // haut de la brique
         if(this.getTop().y >= br.y && this.getTop().y <= br.y + br.h &&
            this.getTop().x >= br.x && this.getTop().x <= br.x + br.w) {
              this.inverserDY() // rebond
              br.endommage() // brique endomagé
-             this.ctx.player.addScore(20) // on gagne 20 points
+             this.game.player.addScore(20) // on gagne 20 points
          }
          // bas de la brique
          if(this.getBot().y >= br.y && this.getBot().y <= br.y + br.h &&
             this.getBot().x >= br.x && this.getBot().x <= br.x + br.w) {
               this.inverserDY()
               br.endommage()
-              this.ctx.player.addScore(20)
+              this.game.player.addScore(20)
           }
           // gauche de la brique
           if(this.getLeft().x <= br.x + br.w && this.getLeft().x >= br.x &&
              this.getLeft().y >= br.y && this.getLeft().y <= br.y + br.h) {
             this.inverserDX()
             br.endommage()
-            this.ctx.player.addScore(20)
+            this.game.player.addScore(20)
           }
           // drotie de la brique
           if(this.getRight().x <= br.x + br.w && this.getRight().x >= br.x &&
              this.getRight().y >= br.y && this.getRight().y <= br.y + br.h) {
             this.inverserDX()
             br.endommage()
-            this.ctx.player.addScore(20)
+            this.game.player.addScore(20)
           }
       }
     }
