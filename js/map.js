@@ -1,6 +1,35 @@
 class Map {
 
-  constructor(ctx) {
+  getXMLHttpRequest() {
+  	var xhr = null;
+
+  	if (window.XMLHttpRequest || window.ActiveXObject) {
+  		if (window.ActiveXObject) {
+  			try {
+  				xhr = new ActiveXObject("Msxml2.XMLHTTP");
+  			} catch(e) {
+  				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+  			}
+  		} else {
+  			xhr = new XMLHttpRequest();
+  		}
+  	} else {
+  		alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+  		return null;
+  	}
+
+  	return xhr;
+  }
+
+  create2DArray(rows) {
+    var arr = [];
+    for (var i = 0; i < rows; i++) {
+      arr[i] = [];
+    }
+    return arr;
+  }
+
+  constructor(ctx,levelName) {
     this.ctx = ctx;
     this.w = ctx.canvas.clientWidth;
     this.h = ctx.canvas.clientHeight;
@@ -8,6 +37,24 @@ class Map {
     this.balles = [];
     this.bckgrndColor = "skyblue";
     this.briques = []
+    this.levelName = levelName; //match to the json file : ./js/levels/{levelName}.json
+    var xhr = this.getXMLHttpRequest();
+    xhr.open("get","./js/levels/1.json", false);
+    xhr.send(null);
+    if (xhr.readyState != 4 || (xhr.status != 200 && xhr.status != 0)) {
+      throw new Error("Impossible de charger le niveau.\r\n debug: " + xhr.status)
+    }
+    var data = JSON.parse(xhr.responseText);
+    this.briques = this.create2DArray(data[this.levelName].data.length);
+
+    for (var i = 0; i < data[this.levelName].data.length; i++) {
+      for (var j=0; j < data[this.levelName].data[i].length; j++) {
+        var br = new Brique(ctx, data[this.levelName].data[i][j]);
+        br.moveTo((50 + (j * br.w) + (j * 10)) , 50 + ( i * br.h) + (i * 10));
+        this.briques[i][j] = br
+      }
+    }
+
   }
 
   addPad(pad) {
